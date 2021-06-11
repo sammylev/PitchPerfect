@@ -17,17 +17,19 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     @IBOutlet weak var stopRecordingButton: UIButton!
 
     
+    // MARK: - After the view loads, update the interface
     override func viewDidLoad() {
         super.viewDidLoad()
-        changeUserInterfaceForRecording(recording: false)
+        changeUserInterfaceForRecording(false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
     }
 
+    // MARK: - Get the file path and record the audio
     @IBAction func recordAudio(_ sender: Any) {
-        changeUserInterfaceForRecording(recording: true)
+        changeUserInterfaceForRecording(true)
         
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
@@ -46,7 +48,7 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     }
     
     @IBAction func stopRecording(_ sender: Any) {
-        changeUserInterfaceForRecording(recording: false)
+        changeUserInterfaceForRecording(false)
         
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
@@ -62,17 +64,11 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         }
     }
     
-    func changeUserInterfaceForRecording(recording: Bool) {
-        if recording {
-            recordingLabel.text = "Recording in Progress"
-            stopRecordingButton.isEnabled = true
-            recordingButton.isEnabled = false
-        } else {
-            recordingLabel.text = "Tap to Record"
-            stopRecordingButton.isEnabled = false
-            recordingButton.isEnabled = true
+    func changeUserInterfaceForRecording(_ isRecording: Bool) {
+                stopRecordingButton.isEnabled = isRecording
+                recordingButton.isEnabled = !isRecording
+                recordingLabel.text = isRecording ? "Recording ..." : "Tap To Record"
         }
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "stopRecording" {
